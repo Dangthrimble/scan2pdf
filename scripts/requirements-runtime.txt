@@ -1,2 +1,2 @@
-# Verification only; not a runtime dependency of score2pdf.
+# Verification only; not a runtime dependency of scan2pdf.
 pypdf==6.19.0

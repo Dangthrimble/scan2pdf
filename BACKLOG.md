@@ -1,6 +1,6 @@
 # Backlog
 
-Outstanding work and unresolved questions for score2pdf. Order does not imply
+Outstanding work and unresolved questions for scan2pdf. Order does not imply
 priority. Current usage is in [README.md](README.md) and
 [INSTALL.md](INSTALL.md).
 

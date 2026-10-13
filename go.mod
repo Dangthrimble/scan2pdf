@@ -1,4 +1,4 @@
-module github.com/Dangthrimble/score2pdf
+module github.com/Dangthrimble/scan2pdf
 
 go 1.26.0
 

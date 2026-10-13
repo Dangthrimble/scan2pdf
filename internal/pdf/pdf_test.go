@@ -9,8 +9,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Dangthrimble/score2pdf/internal/geometry"
-	"github.com/Dangthrimble/score2pdf/internal/pages"
+	"github.com/Dangthrimble/scan2pdf/internal/geometry"
+	"github.com/Dangthrimble/scan2pdf/internal/pages"
 )
 
 func TestCreate(t *testing.T) {
@@ -47,7 +47,7 @@ func TestCreate(t *testing.T) {
 	}
 	out := filepath.Join(d, "Test.pdf")
 	m := geometry.MarginConfig{Top: 36, Bottom: 36, Left: 36, Right: 36, Inner: 36, Outer: 36, Binding: "left"}
-	if err := Create(out, pageList, geometry.PageSize{Width: geometry.MmToPoints(210), Height: geometry.MmToPoints(297)}, m, "top", 242, false, false); err != nil {
+	if err := Create(out, pageList, geometry.PageSize{Width: geometry.MmToPoints(210), Height: geometry.MmToPoints(297)}, m, "top", "centre", 242, false, false); err != nil {
 		t.Fatal(err)
 	}
 	b, err := os.ReadFile(out)

@@ -45,27 +45,27 @@ jobs:
           - target: macos-intel
             runner: macos-15-intel
             python-arch: x64
-            archive: score2pdf-macos-intel.zip
+            archive: scan2pdf-macos-intel.zip
           - target: macos-apple-silicon
             runner: macos-15
             python-arch: arm64
-            archive: score2pdf-macos-apple-silicon.zip
+            archive: scan2pdf-macos-apple-silicon.zip
           - target: windows-x64
             runner: windows-2025
             python-arch: x64
-            archive: score2pdf-windows-x64.zip
+            archive: scan2pdf-windows-x64.zip
           - target: windows-arm64
             runner: windows-11-arm
             python-arch: arm64
-            archive: score2pdf-windows-arm64.zip
+            archive: scan2pdf-windows-arm64.zip
           - target: linux-x64
             runner: ubuntu-24.04
             python-arch: x64
-            archive: score2pdf-linux-x64.tar.gz
+            archive: scan2pdf-linux-x64.tar.gz
           - target: linux-arm64
             runner: ubuntu-24.04-arm
             python-arch: arm64
-            archive: score2pdf-linux-arm64.tar.gz
+            archive: scan2pdf-linux-arm64.tar.gz
     defaults:
       run:
         shell: bash

@@ -20,7 +20,7 @@ def digest(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def check_pdf(path, align, binding):
+def check_pdf(path, v_align, binding, h_align="centre"):
     reader = PdfReader(path, strict=True)
     assert len(reader.pages) == 4, "wrong page count"
     for i, (page, size) in enumerate(zip(reader.pages, [(40, 50), (30, 70), (50, 30), (60, 40)])):
@@ -44,8 +44,8 @@ def check_pdf(path, align, binding):
         available_w, available_h = pw - left - right, ph - 72
         scale = min(available_w / width, available_h / height)
         w, h = width * scale, height * scale
-        x = left + (available_w - w) / 2
-        y = {"top": ph - 36 - h, "middle": 36 + (available_h - h) / 2, "bottom": 36}[align]
+        x = {"left": left, "centre": left + (available_w - w) / 2, "right": left + available_w - w}[h_align]
+        y = {"top": ph - 36 - h, "middle": 36 + (available_h - h) / 2, "bottom": 36}[v_align]
         transforms = [list(map(float, operands)) for operands, op in page.get_contents().operations if op == b"cm"]
         assert len(transforms) == 1
         assert all(math.isclose(a, b, abs_tol=.002) for a, b in zip(transforms[0], [w, 0, 0, h, x, y])), "wrong placement"
@@ -66,7 +66,7 @@ def main():
     archive = args.archive.resolve()
     expected_checksum = archive.with_name(archive.name + ".sha256").read_text().split()[0]
     assert digest(archive) == expected_checksum, "archive checksum mismatch"
-    binary_name = "score2pdf.exe" if goos == "windows" else "score2pdf"
+    binary_name = "scan2pdf.exe" if goos == "windows" else "scan2pdf"
     expected = {binary_name, "README.md", "INSTALL.md", "LICENSE", "THIRD_PARTY_NOTICES.txt"}
     if archive.name.endswith(".zip"):
         with zipfile.ZipFile(archive) as z:
@@ -106,7 +106,7 @@ def main():
         return result.stdout.strip()
 
     version = run(["--version"])
-    assert version.startswith(f"score2pdf {args.version} (commit {args.commit}, built ")
+    assert version.startswith(f"scan2pdf {args.version} (commit {args.commit}, built ")
     checks.append("archive checksum, licences, native architecture and version")
     inputs = work / "inputs"
     inputs.mkdir()
@@ -115,17 +115,22 @@ def main():
             shutil.copyfile(source, inputs / source.name)
     original = {p.name: digest(p) for p in inputs.iterdir()}
     options = ["--input-dir", inputs, "--prefix", "Runtime", "--mirror-margins", "--margin-inner", "18mm", "--margin-outer", "12mm"]
-    for align, binding in [("top", "left"), ("middle", "right"), ("bottom", "left")]:
-        output = work / f"{align}-{binding}.pdf"
-        run([*options, "--align", align, "--binding", binding, output])
-        check_pdf(output, align, binding)
-    checks.append("PNG/JPEG/TIFF/BMP, numeric ordering, trimming, A4, all alignments, both bindings")
-    output = work / "top-left.pdf"
+    for v_align, binding, h_align in [
+        ("top", "left", "centre"),
+        ("middle", "right", "left"),
+        ("bottom", "left", "right"),
+    ]:
+        output = work / f"{v_align}-{binding}-{h_align}.pdf"
+        run([*options, "--v-align", v_align, "--h-align", h_align, "--binding", binding, output])
+        check_pdf(output, v_align, binding, h_align)
+    run([*options, "--align", "top", work / "legacy-align.pdf"], error="--align is no longer supported; use --v-align")
+    checks.append("PNG/JPEG/TIFF/BMP, numeric ordering, trimming, A4, v/h alignments, both bindings")
+    output = work / "top-left-centre.pdf"
     before = digest(output)
     run([*options, output], error="output already exists")
     assert digest(output) == before
     run([*options, "--force", output])
-    check_pdf(output, "top", "left")
+    check_pdf(output, "top", "left", "centre")
     # Conversion failure with --force must retain the previous complete PDF.
     before = digest(output)
     broken = inputs / "Runtime p11.png"
@@ -151,7 +156,7 @@ def main():
     assert not (work / "multipage.pdf").exists()
     disguised.unlink()
     assert {p.name: digest(p) for p in inputs.iterdir()} == original
-    assert not list(work.glob(".score2pdf-*.tmp"))
+    assert not list(work.glob(".scan2pdf-*.tmp"))
     checks.append("overwrite refusal, force replacement, failure preservation, duplicates, disguised multi-page TIFF, unchanged sources")
     verify_suite(binary, work / "compression")
     checks.append("lossless compression: all decoded pixels and placement identical, PDFs never larger")

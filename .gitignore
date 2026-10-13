@@ -1,7 +1,7 @@
 # Build output
 /dist/
-/score2pdf
-/score2pdf.exe
+/scan2pdf
+/scan2pdf.exe
 
 # Generated PDFs
 *.pdf

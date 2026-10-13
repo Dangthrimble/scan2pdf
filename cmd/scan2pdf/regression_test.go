@@ -14,7 +14,7 @@ import (
 
 	"golang.org/x/image/tiff"
 
-	"github.com/Dangthrimble/score2pdf/internal/imageutil"
+	"github.com/Dangthrimble/scan2pdf/internal/imageutil"
 )
 
 func TestMultipageTIFFWithPNGExtension(t *testing.T) {
@@ -85,7 +85,7 @@ func TestOutputCreatedDuringConversion(t *testing.T) {
 	if !bytes.Equal(got, original) {
 		t.Fatalf("output overwritten without --force; conversion error: %v", err)
 	}
-	leftovers, err := filepath.Glob(filepath.Join(d, ".score2pdf-*.tmp"))
+	leftovers, err := filepath.Glob(filepath.Join(d, ".scan2pdf-*.tmp"))
 	if err != nil || len(leftovers) != 0 {
 		t.Fatalf("temporary output was not cleaned up: %v, %v", leftovers, err)
 	}
@@ -99,6 +99,18 @@ func TestBigTIFFWithPNGExtension(t *testing.T) {
 		}
 		if _, err := imageutil.LoadAndTrim(path, 242); err == nil || !strings.Contains(err.Error(), "BigTIFF") {
 			t.Fatalf("expected BigTIFF error, got %v", err)
+		}
+	}
+}
+
+func TestRemovedAlignFlag(t *testing.T) {
+	for _, args := range [][]string{
+		{"--align", "top", "out.pdf"},
+		{"--align=middle", "out.pdf"},
+	} {
+		err := run(args)
+		if err == nil || !strings.Contains(err.Error(), "--align is no longer supported; use --v-align") {
+			t.Fatalf("args %v: expected migration error, got %v", args, err)
 		}
 	}
 }

@@ -34,18 +34,18 @@ def main():
             p.error("version and commit must not contain whitespace or quotes")
     goos, arch, extension = TARGETS[args.target]
     args.output.mkdir(parents=True, exist_ok=True)
-    archive = args.output / ("score2pdf-" + args.target + extension)
+    archive = args.output / ("scan2pdf-" + args.target + extension)
     if archive.exists():
         raise FileExistsError(archive)
-    binary = "score2pdf.exe" if goos == "windows" else "score2pdf"
+    binary = "scan2pdf.exe" if goos == "windows" else "scan2pdf"
     date = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-    with tempfile.TemporaryDirectory(prefix="score2pdf-package-") as temp:
+    with tempfile.TemporaryDirectory(prefix="scan2pdf-package-") as temp:
         folder = Path(temp)
         env = os.environ | {"GOOS": goos, "GOARCH": arch, "CGO_ENABLED": "0", "GOFLAGS": "-mod=readonly"}
         subprocess.run([
             "go", "build", "-trimpath", "-ldflags",
             f"-s -w -X main.version={args.version} -X main.commit={args.commit} -X main.date={date}",
-            "-o", str(folder / binary), "./cmd/score2pdf",
+            "-o", str(folder / binary), "./cmd/scan2pdf",
         ], cwd=ROOT, env=env, check=True)
         (folder / binary).chmod(0o755)
         for name in ("README.md", "INSTALL.md", "LICENSE", "THIRD_PARTY_NOTICES.txt"):

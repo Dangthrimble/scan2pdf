@@ -1,7 +1,7 @@
 """Compare legacy and lossless PDFs, verifying every decoded pixel and placement.
 
 Requires only pypdf (verification dependency). With no input directory, uses
-repository fixtures plus deterministic synthetic pages, not real scanned scores.
+repository fixtures plus deterministic synthetic pages, not real scanned pages.
 Outputs go into a new directory; input images and existing PDFs are not modified.
 """
 import argparse
@@ -72,7 +72,7 @@ def compare(binary, inputs, prefix, output):
 
 
 def synthetic(directory, kind):
-    """Generate score-like patterns with gradients/noise; no external imaging library."""
+    """Generate scan-like patterns with gradients/noise; no external imaging library."""
     directory.mkdir(parents=True)
     width, height = 1201, 1600  # Odd width exercises one-bit row padding.
     channels = 3 if kind == 'colour' else 1
