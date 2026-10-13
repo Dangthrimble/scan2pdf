@@ -1,6 +1,6 @@
 # Synthetic runtime fixtures
 
-These small images were generated for score2pdf verification. They contain a
+These small images were generated for scan2pdf verification. They contain a
 black rectangle with a red marker and a white border, with no personal material.
 They are covered by the repository's MIT licence.
 

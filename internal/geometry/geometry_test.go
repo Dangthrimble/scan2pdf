@@ -69,7 +69,7 @@ func TestMirroredMarginsRightBinding(t *testing.T) {
 
 func TestFitPlacement(t *testing.T) {
 	ps := PageSize{Width: 600, Height: 800}
-	p := FitPlacement(1000, 1200, ps, 50, 50, 50, 50, "top")
+	p := FitPlacement(1000, 1200, ps, 50, 50, 50, 50, "top", "centre")
 	if p.X < 50 || p.Y < 50 || p.X+p.Width > 550.01 || p.Y+p.Height > 750.01 {
 		t.Fatalf("placement outside printable area: %+v", p)
 	}
@@ -78,5 +78,39 @@ func TestFitPlacement(t *testing.T) {
 	}
 	if !near(p.Y+p.Height, 750) {
 		t.Fatalf("expected top alignment, got top=%f", p.Y+p.Height)
+	}
+	for _, hAlign := range []string{"left", "centre", "right"} {
+		got := FitPlacement(1000, 1200, ps, 50, 50, 50, 50, "top", hAlign)
+		if !near(got.X, 50) {
+			t.Fatalf("width-limited h-align %s: expected x=50, got %f", hAlign, got.X)
+		}
+	}
+}
+
+func TestFitPlacementHorizontal(t *testing.T) {
+	// Tall image so height limits scale and horizontal slack remains.
+	ps := PageSize{Width: 600, Height: 800}
+	left, right, top, bottom := 50.0, 50.0, 50.0, 50.0
+	availW := ps.Width - left - right
+	cases := []struct {
+		hAlign string
+		wantX  float64
+	}{
+		{"left", left},
+		{"centre", left + (availW-100)/2},
+		{"center", left + (availW-100)/2},
+		{"right", left + availW - 100},
+	}
+	for _, tc := range cases {
+		p := FitPlacement(100, 700, ps, top, bottom, left, right, "top", tc.hAlign)
+		if !near(p.Width, 100) || !near(p.Height, 700) {
+			t.Fatalf("h-align %s: unexpected size %+v", tc.hAlign, p)
+		}
+		if !near(p.X, tc.wantX) {
+			t.Fatalf("h-align %s: x=%f, want %f", tc.hAlign, p.X, tc.wantX)
+		}
+		if !near(p.Y+p.Height, ps.Height-top) {
+			t.Fatalf("h-align %s: expected top alignment, got top=%f", tc.hAlign, p.Y+p.Height)
+		}
 	}
 }

@@ -160,7 +160,7 @@ func (mc MarginConfig) ForPage(pageNumber int) (top, bottom, left, right float64
 	return mc.Top, mc.Bottom, mc.Inner, mc.Outer
 }
 
-func FitPlacement(pixelW, pixelH int, ps PageSize, top, bottom, left, right float64, align string) Placement {
+func FitPlacement(pixelW, pixelH int, ps PageSize, top, bottom, left, right float64, vAlign, hAlign string) Placement {
 	availW := ps.Width - left - right
 	availH := ps.Height - top - bottom
 	scaleW := availW / float64(pixelW)
@@ -172,8 +172,16 @@ func FitPlacement(pixelW, pixelH int, ps PageSize, top, bottom, left, right floa
 	w := float64(pixelW) * scale
 	h := float64(pixelH) * scale
 	x := left + (availW-w)/2
+	switch hAlign {
+	case "left":
+		x = left
+	case "centre", "center":
+		x = left + (availW-w)/2
+	case "right":
+		x = left + availW - w
+	}
 	y := bottom
-	switch align {
+	switch vAlign {
 	case "top":
 		y = bottom + availH - h
 	case "middle":

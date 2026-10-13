@@ -8,9 +8,9 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/Dangthrimble/score2pdf/internal/geometry"
-	"github.com/Dangthrimble/score2pdf/internal/imageutil"
-	"github.com/Dangthrimble/score2pdf/internal/pages"
+	"github.com/Dangthrimble/scan2pdf/internal/geometry"
+	"github.com/Dangthrimble/scan2pdf/internal/imageutil"
+	"github.com/Dangthrimble/scan2pdf/internal/pages"
 )
 
 type countingWriter struct {
@@ -29,7 +29,7 @@ type writer struct {
 	offsets []int64
 }
 
-func Create(output string, pageList []pages.Page, ps geometry.PageSize, mc geometry.MarginConfig, align string, threshold uint8, force bool, optimise bool) error {
+func Create(output string, pageList []pages.Page, ps geometry.PageSize, mc geometry.MarginConfig, vAlign, hAlign string, threshold uint8, force bool, optimise bool) error {
 	started := time.Now()
 	outDir := filepath.Dir(output)
 	if outDir == "" {
@@ -39,7 +39,7 @@ func Create(output string, pageList []pages.Page, ps geometry.PageSize, mc geome
 		return err
 	}
 
-	tmp, err := os.CreateTemp(outDir, ".score2pdf-*.tmp")
+	tmp, err := os.CreateTemp(outDir, ".scan2pdf-*.tmp")
 	if err != nil {
 		return err
 	}
@@ -79,7 +79,7 @@ func Create(output string, pageList []pages.Page, ps geometry.PageSize, mc geome
 		if left+right >= ps.Width || top+bottom >= ps.Height {
 			return fmt.Errorf("page %d margins leave no printable area", i+1)
 		}
-		place := geometry.FitPlacement(enc.Width, enc.Height, ps, top, bottom, left, right, align)
+		place := geometry.FitPlacement(enc.Width, enc.Height, ps, top, bottom, left, right, vAlign, hAlign)
 
 		fmt.Printf("p%02d  %-40s crop %dx%d  placed %.1f x %.1f mm\n",
 			i+1, pf.Name, enc.Width, enc.Height, geometry.PointsToMM(place.Width), geometry.PointsToMM(place.Height))

@@ -90,7 +90,7 @@ func TestEnsureSinglePageTIFFRejectsMultipleIFDs(t *testing.T) {
 	path := filepath.Join(d, "multi.tif")
 
 	// Minimal little-endian classic TIFF with two empty IFDs. The decoder is
-	// never called; this tests only score2pdf's one-file-per-page guard.
+	// never called; this tests only scan2pdf's one-file-per-page guard.
 	b := make([]byte, 24)
 	copy(b[0:2], []byte("II"))
 	binary.LittleEndian.PutUint16(b[2:4], 42)

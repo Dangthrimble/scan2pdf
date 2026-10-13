@@ -1,4 +1,4 @@
-score2pdf includes the following Go components in its binaries.
+scan2pdf includes the following Go components in its binaries.
 
 golang.org/x/image v0.46.0 (TIFF and BMP decoders)
 https://go.googlesource.com/image

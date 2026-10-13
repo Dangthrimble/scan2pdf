@@ -1,22 +1,22 @@
-# Installing score2pdf
+# Installing scan2pdf
 
-score2pdf is a command-line program. Use Terminal on macOS/Linux or PowerShell
+scan2pdf is a command-line program. Use Terminal on macOS/Linux or PowerShell
 on Windows; it does not open a graphical window. The downloaded executable is
 standalone: you do not need Go, Python, ImageMagick or any other runtime.
 
 ## Choose a download
 
 Download the archive for your computer and `SHA256SUMS.txt` from the same
-[GitHub release](https://github.com/Dangthrimble/score2pdf/releases).
+[GitHub release](https://github.com/Dangthrimble/scan2pdf/releases).
 Choose a packaged executable rather than GitHub's automatically generated
 "Source code" archives.
 
-- macOS with an Intel processor: `score2pdf-macos-intel.zip`.
-- macOS with an Apple M-series chip: `score2pdf-macos-apple-silicon.zip`.
-- Windows with an Intel/AMD 64-bit processor: `score2pdf-windows-x64.zip`.
-- Windows with an ARM64 processor: `score2pdf-windows-arm64.zip`.
-- Linux on an Intel/AMD 64-bit system: `score2pdf-linux-x64.tar.gz`.
-- Linux on a 64-bit ARM system: `score2pdf-linux-arm64.tar.gz`.
+- macOS with an Intel processor: `scan2pdf-macos-intel.zip`.
+- macOS with an Apple M-series chip: `scan2pdf-macos-apple-silicon.zip`.
+- Windows with an Intel/AMD 64-bit processor: `scan2pdf-windows-x64.zip`.
+- Windows with an ARM64 processor: `scan2pdf-windows-arm64.zip`.
+- Linux on an Intel/AMD 64-bit system: `scan2pdf-linux-x64.tar.gz`.
+- Linux on a 64-bit ARM system: `scan2pdf-linux-arm64.tar.gz`.
 
 On macOS, check **Apple menu > About This Mac** for the chip or processor.
 On Windows, check **Settings > System > About > System type**. On Linux,
@@ -37,19 +37,19 @@ Uppercase and lowercase hexadecimal letters represent the same hash.
 macOS, for example:
 
 ```sh
-shasum -a 256 score2pdf-macos-apple-silicon.zip
+shasum -a 256 scan2pdf-macos-apple-silicon.zip
 ```
 
 Windows PowerShell, for example:
 
 ```powershell
-Get-FileHash -Algorithm SHA256 .\score2pdf-windows-x64.zip
+Get-FileHash -Algorithm SHA256 .\scan2pdf-windows-x64.zip
 ```
 
 Linux, for example:
 
 ```sh
-sha256sum score2pdf-linux-x64.tar.gz
+sha256sum scan2pdf-linux-x64.tar.gz
 ```
 
 Substitute your archive's name. If the hashes differ, do not run the executable;
@@ -67,16 +67,16 @@ In Terminal, change to the directory containing your downloaded archive. For
 Apple Silicon:
 
 ```sh
-unzip score2pdf-macos-apple-silicon.zip -d score2pdf-release
-cd score2pdf-release
-./score2pdf --version
+unzip scan2pdf-macos-apple-silicon.zip -d scan2pdf-release
+cd scan2pdf-release
+./scan2pdf --version
 ```
 
-For Intel, substitute `score2pdf-macos-intel.zip`. Choose a new extraction
+For Intel, substitute `scan2pdf-macos-intel.zip`. Choose a new extraction
 folder when upgrading so an existing installation is not overwritten.
 
 The archive preserves executable permissions. If your extraction tool loses
-them, run `chmod u+x score2pdf` inside the extracted folder, then retry.
+them, run `chmod u+x scan2pdf` inside the extracted folder, then retry.
 
 These builds are not Developer ID-signed or notarised. A browser download may
 therefore trigger a Gatekeeper warning even though hosted runtime checks pass.
@@ -92,12 +92,12 @@ alert warrants investigation, not an automatic override.
 Open PowerShell in the download directory. For x64:
 
 ```powershell
-Expand-Archive -LiteralPath .\score2pdf-windows-x64.zip -DestinationPath .\score2pdf-release
-Set-Location .\score2pdf-release
-.\score2pdf.exe --version
+Expand-Archive -LiteralPath .\scan2pdf-windows-x64.zip -DestinationPath .\scan2pdf-release
+Set-Location .\scan2pdf-release
+.\scan2pdf.exe --version
 ```
 
-For ARM64, substitute `score2pdf-windows-arm64.zip`. Use a new destination
+For ARM64, substitute `scan2pdf-windows-arm64.zip`. Use a new destination
 folder for an upgrade. Run the extracted executable, not the copy shown inside
 Explorer's ZIP view.
 
@@ -114,13 +114,13 @@ administrator if a managed computer blocks it.
 In a terminal in the download directory, for x64:
 
 ```sh
-mkdir score2pdf-release
-tar -xzf score2pdf-linux-x64.tar.gz -C score2pdf-release
-cd score2pdf-release
-./score2pdf --version
+mkdir scan2pdf-release
+tar -xzf scan2pdf-linux-x64.tar.gz -C scan2pdf-release
+cd scan2pdf-release
+./scan2pdf --version
 ```
 
-For ARM64, substitute `score2pdf-linux-arm64.tar.gz`. These binaries are
+For ARM64, substitute `scan2pdf-linux-arm64.tar.gz`. These binaries are
 statically linked. Extraction preserves executable permissions; no root access
 is needed. If execution is denied despite correct permissions, use a location
 where execution is permitted (some mounted drives use `noexec`).
@@ -131,22 +131,22 @@ Manually crop scanner/book-edge noise and correct rotation before conversion.
 Use one image per page, named for example:
 
 ```text
-Jingle Bells p01.png
-Jingle Bells p02.jpg
-Jingle Bells p03.tif
+Sample p01.png
+Sample p02.jpg
+Sample p03.tif
 ```
 
 From the extracted program folder, point to the folder containing those images.
 For macOS/Linux, replace `/path/to/scans` with your actual folder:
 
 ```sh
-./score2pdf --input-dir "/path/to/scans" "Jingle Bells.pdf"
+./scan2pdf --input-dir "/path/to/scans" "Sample.pdf"
 ```
 
 In PowerShell, replace the example folder:
 
 ```powershell
-.\score2pdf.exe --input-dir "C:\path\to\scans" "Jingle Bells.pdf"
+.\scan2pdf.exe --input-dir "C:\path\to\scans" "Sample.pdf"
 ```
 
 The PDF is written in the current directory. Defaults are A4 portrait, 12.7 mm
@@ -168,12 +168,12 @@ You can always invoke the executable by its full path. If the path contains
 spaces, quote it. In PowerShell, use the call operator, for example:
 
 ```powershell
-& "C:\path with spaces\score2pdf.exe" --version
+& "C:\path with spaces\scan2pdf.exe" --version
 ```
 
 Optionally add the extracted program folder to your user `PATH` using your
 normal shell or system settings, then open a new terminal. After that,
-`score2pdf --version` works without a folder prefix. Adding it to `PATH` is not
+`scan2pdf --version` works without a folder prefix. Adding it to `PATH` is not
 required, and administrator privileges are not needed for normal use.
 
 ## Compatibility and updates
@@ -189,5 +189,5 @@ folder, and check `--version`. If you use `PATH`, update that folder entry as
 needed. Keep your scans and output PDFs separately from the program folder.
 To uninstall, remove the program folder and any `PATH` entry you added.
 
-score2pdf is provided under the MIT licence in `LICENSE`. Third-party notices
+scan2pdf is provided under the MIT licence in `LICENSE`. Third-party notices
 remain in `THIRD_PARTY_NOTICES.txt`.

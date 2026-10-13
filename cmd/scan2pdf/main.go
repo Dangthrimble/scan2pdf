@@ -8,9 +8,9 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/Dangthrimble/score2pdf/internal/geometry"
-	"github.com/Dangthrimble/score2pdf/internal/pages"
-	"github.com/Dangthrimble/score2pdf/internal/pdf"
+	"github.com/Dangthrimble/scan2pdf/internal/geometry"
+	"github.com/Dangthrimble/scan2pdf/internal/pages"
+	"github.com/Dangthrimble/scan2pdf/internal/pdf"
 )
 
 var (
@@ -21,13 +21,29 @@ var (
 
 func main() {
 	if err := run(os.Args[1:]); err != nil {
-		fmt.Fprintf(os.Stderr, "score2pdf: %v\n", err)
+		fmt.Fprintf(os.Stderr, "scan2pdf: %v\n", err)
 		os.Exit(1)
 	}
 }
 
+func removedAlignFlag(args []string) error {
+	for _, a := range args {
+		if a == "--" {
+			break
+		}
+		if a == "--align" || strings.HasPrefix(a, "--align=") {
+			return errors.New("--align is no longer supported; use --v-align")
+		}
+	}
+	return nil
+}
+
 func run(args []string) error {
-	fs := flag.NewFlagSet("score2pdf", flag.ContinueOnError)
+	if err := removedAlignFlag(args); err != nil {
+		return err
+	}
+
+	fs := flag.NewFlagSet("scan2pdf", flag.ContinueOnError)
 	fs.SetOutput(os.Stderr)
 
 	prefix := fs.String("prefix", "", "input filename prefix (default: output PDF basename)")
@@ -42,19 +58,20 @@ func run(args []string) error {
 	marginInner := fs.String("margin-inner", "", "inner margin when --mirror-margins is enabled")
 	marginOuter := fs.String("margin-outer", "", "outer margin when --mirror-margins is enabled")
 	binding := fs.String("binding", "left", "binding edge for mirrored margins: left or right")
-	align := fs.String("align", "top", "vertical alignment within margins: top, middle, or bottom")
+	vAlignFlag := fs.String("v-align", "top", "vertical alignment within margins: top, middle, or bottom")
+	hAlignFlag := fs.String("h-align", "centre", "horizontal alignment within margins: left, centre, or right")
 	trimThreshold := fs.Int("trim-threshold", 242, "0-255 threshold; pixels at or above this in RGB are treated as white")
 	optimise := fs.Bool("optimise", false, "spend extra time reducing PDF size without changing image pixels")
 	force := fs.Bool("force", false, "replace an existing output PDF")
 	showVersion := fs.Bool("version", false, "print version information")
 
 	fs.Usage = func() {
-		fmt.Fprintln(fs.Output(), "Usage: score2pdf [options] OUTPUT.pdf")
+		fmt.Fprintln(fs.Output(), "Usage: scan2pdf [options] OUTPUT.pdf")
 		fmt.Fprintln(fs.Output())
 		fmt.Fprintln(fs.Output(), "Input files are named <prefix> pNN.<ext>, for example:")
-		fmt.Fprintln(fs.Output(), "  Jingle Bells p01.png")
-		fmt.Fprintln(fs.Output(), "  Jingle Bells p02.jpg")
-		fmt.Fprintln(fs.Output(), "  Jingle Bells p03.tif")
+		fmt.Fprintln(fs.Output(), "  Sample p01.png")
+		fmt.Fprintln(fs.Output(), "  Sample p02.jpg")
+		fmt.Fprintln(fs.Output(), "  Sample p03.tif")
 		fmt.Fprintln(fs.Output(), "Supported: PNG, JPEG, TIFF, BMP")
 		fmt.Fprintln(fs.Output())
 		fmt.Fprintln(fs.Output(), "Options:")
@@ -66,7 +83,7 @@ func run(args []string) error {
 	}
 
 	if *showVersion {
-		fmt.Printf("score2pdf %s (commit %s, built %s)\n", version, commit, date)
+		fmt.Printf("scan2pdf %s (commit %s, built %s)\n", version, commit, date)
 		return nil
 	}
 
@@ -105,9 +122,16 @@ func run(args []string) error {
 		return err
 	}
 
-	alignment := strings.ToLower(*align)
-	if alignment != "top" && alignment != "middle" && alignment != "bottom" {
-		return fmt.Errorf("--align must be top, middle, or bottom")
+	vAlign := strings.ToLower(*vAlignFlag)
+	if vAlign != "top" && vAlign != "middle" && vAlign != "bottom" {
+		return fmt.Errorf("--v-align must be top, middle, or bottom")
+	}
+	hAlign := strings.ToLower(*hAlignFlag)
+	if hAlign == "center" {
+		hAlign = "centre"
+	}
+	if hAlign != "left" && hAlign != "centre" && hAlign != "right" {
+		return fmt.Errorf("--h-align must be left, centre, or right")
 	}
 
 	pageList, err := pages.Discover(*inputDir, *prefix)
@@ -118,7 +142,8 @@ func run(args []string) error {
 	fmt.Printf("Input prefix: %s\n", *prefix)
 	fmt.Printf("Page size: %s (%.2f x %.2f mm)\n", *pageSpec, geometry.PointsToMM(ps.Width), geometry.PointsToMM(ps.Height))
 	fmt.Printf("Pages: %d\n", len(pageList))
-	fmt.Printf("Vertical alignment: %s\n", alignment)
+	fmt.Printf("Vertical alignment: %s\n", vAlign)
+	fmt.Printf("Horizontal alignment: %s\n", hAlign)
 	if *optimise {
 		fmt.Println("Lossless size optimisation: enabled")
 	}
@@ -130,5 +155,5 @@ func run(args []string) error {
 			geometry.PointsToMM(mc.Top), geometry.PointsToMM(mc.Bottom), geometry.PointsToMM(mc.Left), geometry.PointsToMM(mc.Right))
 	}
 
-	return pdf.Create(output, pageList, ps, mc, alignment, uint8(*trimThreshold), *force, *optimise)
+	return pdf.Create(output, pageList, ps, mc, vAlign, hAlign, uint8(*trimThreshold), *force, *optimise)
 }

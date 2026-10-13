@@ -49,7 +49,7 @@ func optimiseImage(raw []byte, channels int, best EncodedImage) (EncodedImage, e
 		return nil
 	}
 	tryFilters := func(data []byte, stride, bpp, bits int) error {
-		// Up often suits repeated score lines; adaptive filtering also handles
+		// Up often suits repeated horizontal lines; adaptive filtering also handles
 		// gradients and colour. Both are reversible PNG predictors supported by PDF.
 		for _, adaptive := range []bool{false, true} {
 			if err := consider(filterRows(data, stride, bpp, adaptive), bits, true); err != nil {

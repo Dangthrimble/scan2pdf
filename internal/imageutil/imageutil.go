@@ -69,10 +69,10 @@ func supportedDecodedFormat(format string) bool {
 	}
 }
 
-// EnsureSinglePageTIFF enforces score2pdf's one-file-per-page rule. Classic
+// EnsureSinglePageTIFF enforces scan2pdf's one-file-per-page rule. Classic
 // TIFF stores a pointer to the next image file directory (IFD) after each IFD.
 // A non-zero next-IFD pointer means that the TIFF contains another page/image.
-// BigTIFF is deliberately rejected because the decoder used by score2pdf does
+// BigTIFF is deliberately rejected because the decoder used by scan2pdf does
 // not support it.
 func EnsureSinglePageTIFF(path string) error {
 	f, err := os.Open(path)
@@ -136,7 +136,7 @@ func validateSinglePageTIFF(f *os.File) error {
 		return fmt.Errorf("read TIFF next IFD: %w", err)
 	}
 	if order.Uint32(nextBuf[:]) != 0 {
-		return errors.New("multi-page TIFF is not supported; use one image file per score page")
+		return errors.New("multi-page TIFF is not supported; use one image file per scan page")
 	}
 	return nil
 }
