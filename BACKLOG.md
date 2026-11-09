@@ -1,15 +1,7 @@
 # Backlog
 
 Outstanding work and unresolved questions for scan2pdf. Order does not imply
-priority. Current usage is in [README.md](README.md) and
-[INSTALL.md](INSTALL.md).
-
-## Distribution
-
-- Consider code signing, macOS notarisation and Windows Authenticode. v0.1.0 is
-  unsigned; checksums check integrity only. Gatekeeper and SmartScreen may warn.
-- Establish minimum supported OS versions beyond the hosted CI runners
-  documented in INSTALL.md. Older systems are untested.
+priority. Current usage is in [README.md](README.md).
 
 ## PDF and encoding
 
