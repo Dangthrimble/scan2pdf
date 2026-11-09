@@ -72,7 +72,7 @@ func run(args []string) error {
 		fmt.Fprintln(fs.Output(), "  Sample p01.png")
 		fmt.Fprintln(fs.Output(), "  Sample p02.jpg")
 		fmt.Fprintln(fs.Output(), "  Sample p03.tif")
-		fmt.Fprintln(fs.Output(), "Supported: PNG, JPEG, TIFF, BMP")
+		fmt.Fprintln(fs.Output(), "Supported: PNG, JPEG, TIFF, BMP, JPEG 2000")
 		fmt.Fprintln(fs.Output())
 		fmt.Fprintln(fs.Output(), "Options:")
 		fs.PrintDefaults()

@@ -21,7 +21,7 @@ func Discover(dir, prefix string) ([]Page, error) {
 		return nil, fmt.Errorf("read input directory: %w", err)
 	}
 
-	re := regexp.MustCompile(`(?i)^` + regexp.QuoteMeta(prefix) + ` p([0-9]+)\.(png|jpe?g|tiff?|bmp)$`)
+	re := regexp.MustCompile(`(?i)^` + regexp.QuoteMeta(prefix) + ` p([0-9]+)\.(png|jpe?g|tiff?|bmp|jp2|j2k|j2c|jpc)$`)
 	seen := map[int]string{}
 	var pages []Page
 
@@ -45,7 +45,7 @@ func Discover(dir, prefix string) ([]Page, error) {
 	}
 
 	if len(pages) == 0 {
-		return nil, fmt.Errorf("no supported image files matching %q pNN.<ext> in %s (PNG, JPEG, TIFF, BMP)", prefix, dir)
+		return nil, fmt.Errorf("no supported image files matching %q pNN.<ext> in %s (PNG, JPEG, TIFF, BMP, JPEG 2000)", prefix, dir)
 	}
 
 	sort.Slice(pages, func(i, j int) bool { return pages[i].Number < pages[j].Number })

@@ -12,6 +12,8 @@ import (
 
 	"golang.org/x/image/bmp"
 	"golang.org/x/image/tiff"
+
+	jpeg2000 "github.com/mrjoshuak/go-jpeg2000"
 )
 
 func TestTrimBounds(t *testing.T) {
@@ -58,6 +60,18 @@ func TestLoadAndTrimSupportedFormats(t *testing.T) {
 		{"Page p02.jpg", func(f *os.File) error { return jpeg.Encode(f, img, &jpeg.Options{Quality: 100}) }},
 		{"Page p03.bmp", func(f *os.File) error { return bmp.Encode(f, img) }},
 		{"Page p04.tif", func(f *os.File) error { return tiff.Encode(f, img, nil) }},
+		{"Page p05.jp2", func(f *os.File) error {
+			opts := jpeg2000.DefaultOptions()
+			opts.Lossless = true
+			opts.Format = jpeg2000.FormatJP2
+			return jpeg2000.Encode(f, img, opts)
+		}},
+		{"Page p06.j2k", func(f *os.File) error {
+			opts := jpeg2000.DefaultOptions()
+			opts.Lossless = true
+			opts.Format = jpeg2000.FormatJ2K
+			return jpeg2000.Encode(f, img, opts)
+		}},
 	}
 
 	for _, tc := range writers {
