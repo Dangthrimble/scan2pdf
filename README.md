@@ -155,7 +155,6 @@ The following input formats are supported:
 - **JPEG** (`.jpg`, `.jpeg`) — useful for scanner/camera output, though lossy compression can soften fine detail.
 - **TIFF** (`.tif`, `.tiff`) — useful for archival and scanning workflows. Standard single-page TIFF is supported.
 - **BMP** (`.bmp`) — supported for compatibility, particularly with Windows-based workflows.
-- **JPEG 2000** (`.jp2`, `.j2k`, `.j2c`, `.jpc`) — JP2 containers and raw codestreams; decoded and then stored in the PDF like other formats.
 
 Formats can be mixed within the same scan set:
 
@@ -164,7 +163,6 @@ Sample p01.png
 Sample p02.jpg
 Sample p03.tif
 Sample p04.bmp
-Sample p05.jp2
 ```
 
 The page number, not the image extension, determines ordering. A duplicate page number is an error even if the two files use different formats.
