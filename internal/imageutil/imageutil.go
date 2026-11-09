@@ -14,8 +14,6 @@ import (
 
 	_ "golang.org/x/image/bmp"
 	_ "golang.org/x/image/tiff"
-
-	_ "github.com/mrjoshuak/go-jpeg2000"
 )
 
 type EncodedImage struct {
@@ -64,7 +62,7 @@ func LoadAndTrim(path string, threshold uint8) (image.Image, error) {
 
 func supportedDecodedFormat(format string) bool {
 	switch strings.ToLower(format) {
-	case "png", "jpeg", "tiff", "bmp", "jp2", "j2k":
+	case "png", "jpeg", "tiff", "bmp":
 		return true
 	default:
 		return false
