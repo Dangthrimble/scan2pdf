@@ -8,7 +8,7 @@ import (
 
 func TestDiscoverNumericOrderMixedFormats(t *testing.T) {
 	d := t.TempDir()
-	for _, name := range []string{"Piece p10.bmp", "Piece p2.jpg", "Piece p01.png", "Piece p3.tiff", "other.gif"} {
+	for _, name := range []string{"Piece p10.bmp", "Piece p2.jpg", "Piece p01.png", "Piece p3.tiff", "Piece p4.jp2", "other.gif"} {
 		if err := os.WriteFile(filepath.Join(d, name), []byte("x"), 0644); err != nil {
 			t.Fatal(err)
 		}
@@ -17,10 +17,10 @@ func TestDiscoverNumericOrderMixedFormats(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(got) != 4 {
+	if len(got) != 5 {
 		t.Fatalf("got %d pages", len(got))
 	}
-	want := []int{1, 2, 3, 10}
+	want := []int{1, 2, 3, 4, 10}
 	for i, n := range want {
 		if got[i].Number != n {
 			t.Fatalf("wrong page order: %+v", got)
