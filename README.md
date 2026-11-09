@@ -7,6 +7,131 @@ It is designed for a simple workflow: manually remove scanner/book-edge noise an
 
 The program is written in pure Go and has no runtime dependency on ImageMagick, Python, `img2pdf`, or any external PDF library. JPEG and PNG use Go's standard image decoders; TIFF and BMP use the pure-Go `golang.org/x/image` decoders, compiled into the executable.
 
+## Git
+
+Git is a tool that downloads and updates project files on your computer.
+
+- **Install:** get Git from [git-scm.com/downloads](https://git-scm.com/downloads) (choose the installer for your computer) and run it.
+- **Upgrade:** download a newer installer from the same page and run it again, or use your computer’s usual update method.
+
+Open a **new** Terminal window and check:
+
+```bash
+git --version
+```
+
+## This project’s files (repository)
+
+- **First time:** download a full copy of the project. In Terminal:
+
+  ```bash
+  git clone https://github.com/Dangthrimble/scan2pdf.git
+  cd scan2pdf
+  ```
+
+  This creates a folder named `scan2pdf` with the project files inside.
+
+- **Later:** get the latest project files:
+
+  ```bash
+  cd scan2pdf
+  git pull
+  ```
+
+Updating these files does **not** by itself update the installed command. To refresh the command, follow **Update** below.
+
+## Go
+
+Go is the programming toolkit used to download and install this command-line program.
+
+- **Install:** get Go **1.26** or newer from [go.dev/dl](https://go.dev/dl/). Choose the installer for your computer, run it, and accept the defaults unless you know you need otherwise.
+- **Check:** open a **new** Terminal window and run:
+
+  ```bash
+  go version
+  ```
+
+  You should see a version of 1.26 or higher.
+
+- **Update:** later, download a newer installer from the same page and run it again (or follow that page’s update steps), then open a new Terminal and run `go version` to confirm.
+
+## Install
+
+In Terminal, run:
+
+```bash
+go install github.com/Dangthrimble/scan2pdf/cmd/scan2pdf@latest
+```
+
+## Check that it worked
+
+```bash
+command -v scan2pdf
+```
+
+The command should print a path (often ending in `go/bin/…`).
+
+Then try:
+
+```bash
+scan2pdf --version
+```
+
+If you see version text, the program is installed.
+
+## If `command -v` prints nothing (PATH)
+
+Go puts the program in a `bin` folder that your computer may not search yet.
+
+1. Show the folder:
+
+   ```bash
+   go env GOBIN
+   go env GOPATH
+   ```
+
+   Use `GOBIN` if it printed a path; otherwise use `GOPATH` plus `/bin` (example: `/Users/you/go/bin`).
+
+2. **zsh** (default on Mac) — add this line to `~/.zshrc`:
+
+   ```bash
+   export PATH="$(go env GOPATH)/bin:$PATH"
+   ```
+
+   If `go env GOBIN` printed a path, use that instead of `$(go env GOPATH)/bin`.
+
+3. Save the file. Open a **new** Terminal window (or run `source ~/.zshrc`).
+
+4. Run `command -v scan2pdf` again.
+
+**bash:** put the same `export PATH=…` line in `~/.bashrc` or `~/.bash_profile`.
+
+**Windows:** add the folder from `go env GOPATH` + `\bin` (or `GOBIN`) to your user Path under Environment Variables, open a new Command Prompt, and run `where scan2pdf`.
+
+## Update
+
+1. Upgrade Git if needed (see **Git**).
+2. Update Go if needed (see **Go**).
+3. If you keep a local copy of the project, run `git pull` (see **This project’s files**).
+4. Re-run the same `go install …@latest` command as in **Install**.
+5. Run `command -v scan2pdf` again.
+
+## Quick start
+
+With files such as `Sample p01.png`, `Sample p02.jpg`, etc. in the current directory:
+
+```sh
+scan2pdf "Sample.pdf"
+```
+
+The input prefix defaults to the output PDF basename, so the command above looks for supported files named `Sample pNN.<ext>`.
+
+To use a different output filename:
+
+```sh
+scan2pdf --prefix "Sample" "Sample Print.pdf"
+```
+
 ## Input filenames
 
 Use one image file per final PDF page:
@@ -21,7 +146,6 @@ Sample p03.tif
 The `p` prefix is required. Page numbers are sorted numerically, so `p2` correctly comes before `p10`; zero-padding (`p01`, `p02`, ...) is still recommended because it also sorts naturally in Finder and Explorer.
 
 If an original scan contains two facing pages, split it into two image files before running `scan2pdf`.
-
 
 ## Supported image formats
 
@@ -44,25 +168,6 @@ Sample p04.bmp
 The page number, not the image extension, determines ordering. A duplicate page number is an error even if the two files use different formats.
 
 The program deliberately follows a **one image file = one PDF page** rule. Multi-page TIFF files are rejected with an explanatory error; split them into separate `pNN` files first. BigTIFF is not supported.
-
-## Quick start
-
-See [INSTALL.md](INSTALL.md) for downloads, checksum verification, installation
-and first-run instructions on macOS, Windows and Linux.
-
-With files such as `Sample p01.png`, `Sample p02.jpg`, etc. in the current directory:
-
-```sh
-scan2pdf "Sample.pdf"
-```
-
-The input prefix defaults to the output PDF basename, so the command above looks for supported files named `Sample pNN.<ext>`.
-
-To use a different output filename:
-
-```sh
-scan2pdf --prefix "Sample" "Sample Print.pdf"
-```
 
 ## Defaults
 
@@ -218,69 +323,6 @@ Show all options:
 scan2pdf -h
 ```
 
-## Builds
-
-Release builds are produced for six targets:
-
-| Platform | Architecture | Release name |
-| --- | --- | --- |
-| macOS | Intel 64-bit (`amd64`) | `scan2pdf-macos-intel.zip` |
-| macOS | Apple Silicon (`arm64`) | `scan2pdf-macos-apple-silicon.zip` |
-| Windows | x64 (`amd64`) | `scan2pdf-windows-x64.zip` |
-| Windows | ARM64 (`arm64`) | `scan2pdf-windows-arm64.zip` |
-| Linux | x64 (`amd64`) | `scan2pdf-linux-x64.tar.gz` |
-| Linux | ARM64 (`arm64`) | `scan2pdf-linux-arm64.tar.gz` |
-
-The binaries are built with `CGO_ENABLED=0`, so no additional runtime libraries are required.
-
-Linux archives preserve executable permissions. Extract the archive for your architecture and run the binary:
-
-```sh
-tar -xzf scan2pdf-linux-x64.tar.gz
-./scan2pdf --version
-```
-
-Use `scan2pdf-linux-arm64.tar.gz` on a 64-bit ARM system. CI runs the tests and standalone binary on both Linux architectures. `SHA256SUMS.txt` covers all six release archives.
-
-## Build from source
-
-Building from source requires **Go 1.26 or newer**. Release builds use Go 1.27.
-
-```sh
-go build ./cmd/scan2pdf
-```
-
-Run the tests:
-
-```sh
-go test ./...
-```
-
-The GitHub Actions release workflow builds all six supported binaries when a tag beginning with `v` is pushed, for example `v0.1.0`.
-
-Release archives include `THIRD_PARTY_NOTICES.txt` for the Go runtime and image decoders. Release publication waits for tests on Linux, macOS and Windows and native runtime verification of all six packaged executables. The release publishes those exact verified archives.
-
-## Licence
-
-scan2pdf is licensed under the [MIT licence](LICENSE), copyright 2026 Dangthrimble.
-All release packages include `LICENSE`. Third-party components retain their own
-licences, reproduced separately in `THIRD_PARTY_NOTICES.txt`.
-
-## Hosted runtime verification
-
-CI builds, unpacks and executes the release-format package on each of the six
-native operating-system/architecture combinations. A separate PDF reader checks
-four-format image conversion, numeric page ordering, trimming, A4 geometry,
-vertical and horizontal alignment and mirrored margins. The checks also exercise
-version metadata, overwrite refusal, forced replacement, preservation of an
-existing PDF after a failed conversion, duplicate page rejection and multi-page
-TIFF rejection even when the filename extension is misleading.
-
-Each successful job retains its package and SHA-256 checksum plus a JSON report
-and sample PDFs as GitHub Actions artifacts. These CI artifacts are development
-builds, not published releases. Verification uses Python and pypdf only on the
-build/test hosts; the distributed scan2pdf executable remains standalone.
-
 ## Optional lossless PDF size optimisation
 
 Normal conversion favours speed. Add `--optimise` when a smaller PDF is worth
@@ -341,5 +383,29 @@ python scripts/compare_compression.py --binary dist/scan2pdf \
 
 The comparison outputs include `legacy.pdf`, `lossless.pdf`, and
 `comparison.json`. This developer verification needs Python and pypdf; the
-scan2pdf executable remains standalone. Native package CI also runs the
-comparison suite on all six supported targets.
+scan2pdf executable remains standalone. CI also runs the comparison suite on
+supported targets.
+
+## For developers
+
+From a local checkout of this repository:
+
+```sh
+go build ./cmd/scan2pdf
+go test ./...
+```
+
+## Hosted runtime verification
+
+CI runs tests and native runtime checks on supported operating-system and
+architecture combinations. Those checks cover image conversion, page ordering,
+trimming, geometry, alignment, mirrored margins, overwrite behaviour, and
+related edge cases. Verification helpers use Python and pypdf only on the
+build/test hosts; the installed `scan2pdf` command itself remains a standalone
+Go binary.
+
+## Licence
+
+scan2pdf is licensed under the [MIT licence](LICENSE), copyright 2026 Dangthrimble.
+Third-party components retain their own licences, reproduced separately in
+`THIRD_PARTY_NOTICES.txt`.
