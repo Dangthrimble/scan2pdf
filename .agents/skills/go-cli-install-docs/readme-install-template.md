@@ -4,41 +4,24 @@ Fill `MODULE`, `CMD` (repeat per command), `MIN_GO`, and `CLONE_URL` from the re
 Keep every section in non-technical plain English. Prefer short numbered steps and
 copy-paste commands.
 
-For **Git**, **repository**, **Go**, and **any other dependency** needed to install
-or update the CLIs: include a plain-English description **or** a link to one that
-covers both install and update. If linking out, the link target must suit
-non-technical readers; add a one-line summary beside the link.
+Lead with the note that downloading the project is unnecessary for the command.
+Then **Go**, **other dependencies** (only when one exists), **Install**, **Check**,
+**PATH**, and **Update**. Put **Git** and **This project’s files** after Update,
+and label them as optional.
 
-## Git (required)
+For **Go**, **any other dependency** needed to install or update the CLIs, and
+(in the optional section) **Git** and the **repository**: include a plain-English
+description **or** a link to one that covers both install and update. If linking
+out, the link target must suit non-technical readers; add a one-line summary
+beside the link.
 
-- **Install Git** — what Git is in one sentence (“a tool that downloads and updates
-  project files”), then how to get it on Mac / Windows / Linux (official downloads
-  or the platform’s usual method).
-- **Upgrade Git** — how to get a newer Git later (re-run the installer, or the
-  platform’s upgrade steps).
+## You do not need this project’s files (required, first)
 
-Afterward: open a new Terminal and run `git --version` to confirm it worked.
+Say this before any install steps:
 
-## This project’s files (repository) (required)
-
-- **Install (first time)** — download a full copy of the project, e.g.:
-
-  ```bash
-  git clone CLONE_URL
-  cd REPO_DIR
-  ```
-
-  Say where the files will appear (a new folder on their computer).
-
-- **Upgrade (later)** — get the latest project files:
-
-  ```bash
-  cd REPO_DIR
-  git pull
-  ```
-
-Explain that this updates the source files; updating the installed commands is a
-separate step under **Update** below (re-run `go install`).
+To install the command, you do not need to download this project’s files. The
+install command below gets the program for you. Skip **Git** and **This
+project’s files** unless you want a copy of the source on your computer.
 
 ## Go (required)
 
@@ -69,7 +52,7 @@ unless the project adds one):
 - How to check it worked
 
 Place each dependency **before** the CLI **Install** section. When a new
-dependency is introduced, add it here in the same style as Git and Go.
+dependency is introduced, add it here in the same style as Go.
 
 ## Install
 
@@ -123,9 +106,48 @@ user Path in Environment Variables, then open a new Command Prompt and run
 
 ## Update
 
-1. Upgrade Git if needed (see Git section).
-2. Update Go if needed (see Go section).
-3. Update any other dependencies if needed (see Other dependencies).
-4. Update the project files if you use a local copy (`git pull`, see repository section).
-5. Re-run the same `go install …@latest` commands as in Install.
-6. Run `command -v` again.
+1. Update Go if needed (see Go section).
+2. Update any other dependencies if needed (see Other dependencies).
+3. Re-run the same `go install …@latest` commands as in Install.
+4. Run `command -v` again.
+
+If you keep a local copy of the source, you can also upgrade Git and run
+`git pull` (see the optional sections below). That updates the files on your
+computer. It does not replace step 3.
+
+## Git (optional — only if you want the project files)
+
+Skip this section if you only want the command.
+
+- **Install Git** — what Git is in one sentence (“a tool that downloads and updates
+  project files”), then how to get it on Mac / Windows / Linux (official downloads
+  or the platform’s usual method).
+- **Upgrade Git** — how to get a newer Git later (re-run the installer, or the
+  platform’s upgrade steps).
+
+Afterward: open a new Terminal and run `git --version` to confirm it worked.
+
+## This project’s files (repository) (optional — only if you want a copy)
+
+Skip this section if you only want the command. You do not need these files to
+install or update the command.
+
+- **Install (first time)** — download a full copy of the project, e.g.:
+
+  ```bash
+  git clone CLONE_URL
+  cd REPO_DIR
+  ```
+
+  Say where the files will appear (a new folder on their computer).
+
+- **Upgrade (later)** — get the latest project files:
+
+  ```bash
+  cd REPO_DIR
+  git pull
+  ```
+
+Explain that this updates the source files on their computer. Updating the
+installed command is a separate step under **Update** above (re-run
+`go install`).

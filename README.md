@@ -7,38 +7,9 @@ It is designed for a simple workflow: manually remove scanner/book-edge noise an
 
 The program is written in pure Go and has no runtime dependency on ImageMagick, Python, `img2pdf`, or any external PDF library. JPEG and PNG use Go's standard image decoders; TIFF and BMP use the pure-Go `golang.org/x/image` decoders, compiled into the executable.
 
-## Git
+## Install the command
 
-Git is a tool that downloads and updates project files on your computer.
-
-- **Install:** get Git from [git-scm.com/downloads](https://git-scm.com/downloads) (choose the installer for your computer) and run it.
-- **Upgrade:** download a newer installer from the same page and run it again, or use your computer’s usual update method.
-
-Open a **new** Terminal window and check:
-
-```bash
-git --version
-```
-
-## This project’s files (repository)
-
-- **First time:** download a full copy of the project. In Terminal:
-
-  ```bash
-  git clone https://github.com/Dangthrimble/scan2pdf.git
-  cd scan2pdf
-  ```
-
-  This creates a folder named `scan2pdf` with the project files inside.
-
-- **Later:** get the latest project files:
-
-  ```bash
-  cd scan2pdf
-  git pull
-  ```
-
-Updating these files does **not** by itself update the installed command. To refresh the command, follow **Update** below.
+To install the command, you do not need to download this project’s files. The install command below gets the program for you. Skip **Git** and **This project’s files** unless you want a copy of the source on your computer.
 
 ## Go
 
@@ -110,11 +81,48 @@ Go puts the program in a `bin` folder that your computer may not search yet.
 
 ## Update
 
-1. Upgrade Git if needed (see **Git**).
-2. Update Go if needed (see **Go**).
-3. If you keep a local copy of the project, run `git pull` (see **This project’s files**).
-4. Re-run the same `go install …@latest` command as in **Install**.
-5. Run `command -v scan2pdf` again.
+1. Update Go if needed (see **Go**).
+2. Re-run the same `go install …@latest` command as in **Install**.
+3. Run `command -v scan2pdf` again.
+
+If you keep a local copy of the source, you can also upgrade Git and run `git pull` (see **Git** and **This project’s files** below). That updates the files on your computer. It does not replace step 2.
+
+## Git (optional — only if you want the project files)
+
+Skip this section if you only want the command.
+
+Git is a tool that downloads and updates project files on your computer.
+
+- **Install:** get Git from [git-scm.com/downloads](https://git-scm.com/downloads) (choose the installer for your computer) and run it.
+- **Upgrade:** download a newer installer from the same page and run it again, or use your computer’s usual update method.
+
+Open a **new** Terminal window and check:
+
+```bash
+git --version
+```
+
+## This project’s files (repository) (optional — only if you want a copy)
+
+Skip this section if you only want the command. You do not need these files to install or update the command.
+
+- **First time:** download a full copy of the project. In Terminal:
+
+  ```bash
+  git clone https://github.com/Dangthrimble/scan2pdf.git
+  cd scan2pdf
+  ```
+
+  This creates a folder named `scan2pdf` with the project files inside.
+
+- **Later:** get the latest project files:
+
+  ```bash
+  cd scan2pdf
+  git pull
+  ```
+
+This updates the source files on your computer. Updating the installed command is a separate step under **Update** above (re-run `go install`).
 
 ## Quick start
 
