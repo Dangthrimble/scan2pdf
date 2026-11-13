@@ -67,7 +67,16 @@ def main():
     expected_checksum = archive.with_name(archive.name + ".sha256").read_text().split()[0]
     assert digest(archive) == expected_checksum, "archive checksum mismatch"
     binary_name = "scan2pdf.exe" if goos == "windows" else "scan2pdf"
-    expected = {binary_name, "README.md", "LICENSE", "THIRD_PARTY_NOTICES.txt"}
+    expected = {
+        binary_name,
+        "README.md",
+        "INSTALL.md",
+        "LICENSE",
+        "THIRD_PARTY_NOTICES.txt",
+        "docs/install-go.md",
+        "docs/usage.md",
+        "docs/developing.md",
+    }
     if archive.name.endswith(".zip"):
         with zipfile.ZipFile(archive) as z:
             assert len(z.namelist()) == len(expected) and set(z.namelist()) == expected
