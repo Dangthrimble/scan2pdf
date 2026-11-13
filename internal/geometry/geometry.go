@@ -36,11 +36,11 @@ type Placement struct {
 func ParsePageSize(s string) (PageSize, error) {
 	switch strings.ToLower(strings.TrimSpace(s)) {
 	case "a3":
-		return PageSize{MmToPoints(297), MmToPoints(420)}, nil
+		return PageSize{MMToPoints(297), MMToPoints(420)}, nil
 	case "a4":
-		return PageSize{MmToPoints(210), MmToPoints(297)}, nil
+		return PageSize{MMToPoints(210), MMToPoints(297)}, nil
 	case "a5":
-		return PageSize{MmToPoints(148), MmToPoints(210)}, nil
+		return PageSize{MMToPoints(148), MMToPoints(210)}, nil
 	case "letter":
 		return PageSize{8.5 * PointsPerInch, 11 * PointsPerInch}, nil
 	case "legal":
@@ -192,5 +192,5 @@ func FitPlacement(pixelW, pixelH int, ps PageSize, top, bottom, left, right floa
 	return Placement{X: x, Y: y, Width: w, Height: h}
 }
 
-func MmToPoints(mm float64) float64 { return mm * PointsPerInch / 25.4 }
+func MMToPoints(mm float64) float64 { return mm * PointsPerInch / 25.4 }
 func PointsToMM(pt float64) float64 { return pt * 25.4 / PointsPerInch }

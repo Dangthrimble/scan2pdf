@@ -1,4 +1,4 @@
-"""Compare legacy and lossless PDFs, verifying every decoded pixel and placement.
+"""Compare default and optimised PDFs, verifying every decoded pixel and placement.
 
 Requires only pypdf (verification dependency). With no input directory, uses
 repository fixtures plus deterministic synthetic pages, not real scanned pages.
@@ -36,17 +36,17 @@ def image_pixels(image):
 def compare(binary, inputs, prefix, output):
     output.mkdir(parents=True, exist_ok=False)
     times = {}
-    for mode in ('legacy', 'lossless'):
+    for mode in ('default', 'optimised'):
         start = time.perf_counter()
         arguments = [str(binary), '--input-dir', str(inputs), '--prefix', prefix]
-        if mode == 'lossless':
+        if mode == 'optimised':
             arguments.append('--optimise')
         arguments.append(str(output / f'{mode}.pdf'))
         subprocess.run(arguments,
                        check=True, capture_output=True, text=True)
         times[mode] = round(time.perf_counter() - start, 3)
-    old = PdfReader(output / 'legacy.pdf', strict=True)
-    new = PdfReader(output / 'lossless.pdf', strict=True)
+    old = PdfReader(output / 'default.pdf', strict=True)
+    new = PdfReader(output / 'optimised.pdf', strict=True)
     assert len(old.pages) == len(new.pages)
     pages = []
     for index, (a, b) in enumerate(zip(old.pages, new.pages), 1):
@@ -60,10 +60,10 @@ def compare(binary, inputs, prefix, output):
                       'bits': int(bi['/BitsPerComponent']),
                       'predictor': int(bi.get('/DecodeParms', {}).get('/Predictor', 1)),
                       'pixel_sha256': hashlib.sha256(after[3]).hexdigest()})
-    old_size = (output / 'legacy.pdf').stat().st_size
-    new_size = (output / 'lossless.pdf').stat().st_size
+    old_size = (output / 'default.pdf').stat().st_size
+    new_size = (output / 'optimised.pdf').stat().st_size
     assert new_size <= old_size, 'PDF grew'
-    report = {'input_prefix': prefix, 'legacy_bytes': old_size, 'lossless_bytes': new_size,
+    report = {'input_prefix': prefix, 'default_bytes': old_size, 'optimised_bytes': new_size,
               'saved_percent': round(100 * (old_size - new_size) / old_size, 2),
               'seconds': times, 'identical_pixels_and_placement': True, 'pages': pages}
     (output / 'comparison.json').write_text(json.dumps(report, indent=2) + '\n', encoding='utf-8')

@@ -47,7 +47,7 @@ func TestCreate(t *testing.T) {
 	}
 	out := filepath.Join(d, "Test.pdf")
 	m := geometry.MarginConfig{Top: 36, Bottom: 36, Left: 36, Right: 36, Inner: 36, Outer: 36, Binding: "left"}
-	if err := Create(out, pageList, geometry.PageSize{Width: geometry.MmToPoints(210), Height: geometry.MmToPoints(297)}, m, "top", "centre", 242, false, false); err != nil {
+	if err := Create(out, pageList, geometry.PageSize{Width: geometry.MMToPoints(210), Height: geometry.MMToPoints(297)}, m, "top", "centre", 242, false, false); err != nil {
 		t.Fatal(err)
 	}
 	b, err := os.ReadFile(out)

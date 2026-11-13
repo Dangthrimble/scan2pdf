@@ -60,19 +60,19 @@ func Create(output string, pageList []pages.Page, ps geometry.PageSize, mc geome
 		return err
 	}
 
-	mode := "legacy"
+	mode := "default"
 	if optimise {
-		mode = "lossless"
+		mode = "optimised"
 	}
 
-	for i, pf := range pageList {
-		img, err := imageutil.LoadAndTrim(pf.Path, threshold)
+	for i, page := range pageList {
+		img, err := imageutil.LoadAndTrim(page.Path, threshold)
 		if err != nil {
-			return fmt.Errorf("%s: %w", pf.Name, err)
+			return fmt.Errorf("%s: %w", page.Name, err)
 		}
 		enc, err := imageutil.EncodeMode(img, mode)
 		if err != nil {
-			return fmt.Errorf("%s: %w", pf.Name, err)
+			return fmt.Errorf("%s: %w", page.Name, err)
 		}
 
 		top, bottom, left, right := mc.ForPage(i + 1)
@@ -82,7 +82,7 @@ func Create(output string, pageList []pages.Page, ps geometry.PageSize, mc geome
 		place := geometry.FitPlacement(enc.Width, enc.Height, ps, top, bottom, left, right, vAlign, hAlign)
 
 		fmt.Printf("p%02d  %-40s crop %dx%d  placed %.1f x %.1f mm\n",
-			i+1, pf.Name, enc.Width, enc.Height, geometry.PointsToMM(place.Width), geometry.PointsToMM(place.Height))
+			i+1, page.Name, enc.Width, enc.Height, geometry.PointsToMM(place.Width), geometry.PointsToMM(place.Height))
 
 		if err := pw.writePage(i, ps, place, enc); err != nil {
 			return err
