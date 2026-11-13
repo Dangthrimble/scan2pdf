@@ -99,7 +99,9 @@ def main():
     package = work / "unpacked"
     package.mkdir()
     for name, content in data.items():
-        (package / name).write_bytes(content)
+        dest = package / name
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        dest.write_bytes(content)
     binary = package / binary_name
     binary.chmod(0o755)
     info = subprocess.check_output(["go", "version", "-m", str(binary)], text=True)
