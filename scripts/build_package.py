@@ -48,17 +48,29 @@ def main():
             "-o", str(folder / binary), "./cmd/scan2pdf",
         ], cwd=ROOT, env=env, check=True)
         (folder / binary).chmod(0o755)
-        for name in ("README.md", "LICENSE", "THIRD_PARTY_NOTICES.txt"):
-            shutil.copyfile(ROOT / name, folder / name)
-            (folder / name).chmod(0o644)
+        package_files = (
+            "README.md",
+            "INSTALL.md",
+            "LICENSE",
+            "THIRD_PARTY_NOTICES.txt",
+            "docs/install-go.md",
+            "docs/usage.md",
+            "docs/developing.md",
+        )
+        for name in package_files:
+            dest = folder / name
+            dest.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(ROOT / name, dest)
+            dest.chmod(0o644)
+        members = [binary] + list(package_files)
         if extension == ".zip":
             with zipfile.ZipFile(archive, "x", zipfile.ZIP_DEFLATED) as z:
-                for path in sorted(folder.iterdir()):
-                    z.write(path, path.name)
+                for name in sorted(members):
+                    z.write(folder / name, name)
         else:
             with tarfile.open(archive, "x:gz", format=tarfile.PAX_FORMAT) as t:
-                for path in sorted(folder.iterdir()):
-                    t.add(path, arcname=path.name, recursive=False)
+                for name in sorted(members):
+                    t.add(folder / name, arcname=name, recursive=False)
     digest = hashlib.sha256(archive.read_bytes()).hexdigest()
     archive.with_name(archive.name + ".sha256").write_text(
         f"{digest}  {archive.name}\n", encoding="utf-8", newline="\n"

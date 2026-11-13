@@ -1,27 +1,38 @@
-# README install section skeleton
+# Install-with-Go guide skeleton (`docs/install-go.md`)
 
 Fill `MODULE`, `CMD` (repeat per command), `MIN_GO`, and `CLONE_URL` from the repo.
 Keep every section in non-technical plain English. Prefer short numbered steps and
 copy-paste commands.
 
-Lead with the note that downloading the project is unnecessary for the command.
-Then **Go**, **other dependencies** (only when one exists), **Install**, **Check**,
-**PATH**, and **Update**. Put **Git** and **This project’s files** after Update,
-and label them as optional.
+Use this content in `docs/install-go.md` (or an equivalent linked guide). The
+README stays a short hub: upfront “no clone required” note, links to this guide
+and any ZIP install path, then usage/docs map—not the full procedure below.
 
-For **Go**, **any other dependency** needed to install or update the CLIs, and
-(in the optional section) **Git** and the **repository**: include a plain-English
-description **or** a link to one that covers both install and update. If linking
-out, the link target must suit non-technical readers; add a one-line summary
-beside the link.
+Start with the upfront note below. For **Git**, **Go**, and **any other dependency**
+needed to install or update the CLIs: include a plain-English description **or** a
+link to one that covers both install and update. If linking out, the link target
+must suit non-technical readers; add a one-line summary beside the link.
 
-## You do not need this project’s files (required, first)
+Document **This project’s files (repository)** only as optional, **after Update**.
 
-Say this before any install steps:
+## Upfront note (required)
 
-To install the command, you do not need to download this project’s files. The
-install command below gets the program for you. Skip **Git** and **This
-project’s files** unless you want a copy of the source on your computer.
+Before **Git**, say in plain English:
+
+- If you only want the command-line program(s), you do **not** need to download
+  this project’s files.
+- Skip **This project’s files (optional)** below.
+- The Install step uses `go install …@latest`, which fetches what it needs.
+
+## Git (required)
+
+- **Install Git** — what Git is in one sentence (“a tool that downloads and updates
+  project files”), then how to get it on Mac / Windows / Linux (official downloads
+  or the platform’s usual method).
+- **Upgrade Git** — how to get a newer Git later (re-run the installer, or the
+  platform’s upgrade steps).
+
+Afterward: open a new Terminal and run `git --version` to confirm it worked.
 
 ## Go (required)
 
@@ -52,7 +63,7 @@ unless the project adds one):
 - How to check it worked
 
 Place each dependency **before** the CLI **Install** section. When a new
-dependency is introduced, add it here in the same style as Go.
+dependency is introduced, add it here in the same style as Git and Go.
 
 ## Install
 
@@ -106,31 +117,17 @@ user Path in Environment Variables, then open a new Command Prompt and run
 
 ## Update
 
-1. Update Go if needed (see Go section).
-2. Update any other dependencies if needed (see Other dependencies).
-3. Re-run the same `go install …@latest` commands as in Install.
-4. Run `command -v` again.
+1. Upgrade Git if needed (see Git section).
+2. Update Go if needed (see Go section).
+3. Update any other dependencies if needed (see Other dependencies).
+4. Update the project files if you use a local copy (`git pull`, see repository section).
+5. Re-run the same `go install …@latest` commands as in Install.
+6. Run `command -v` again.
 
-If you keep a local copy of the source, you can also upgrade Git and run
-`git pull` (see the optional sections below). That updates the files on your
-computer. It does not replace step 3.
+## This project’s files (repository) (optional)
 
-## Git (optional — only if you want the project files)
-
-Skip this section if you only want the command.
-
-- **Install Git** — what Git is in one sentence (“a tool that downloads and updates
-  project files”), then how to get it on Mac / Windows / Linux (official downloads
-  or the platform’s usual method).
-- **Upgrade Git** — how to get a newer Git later (re-run the installer, or the
-  platform’s upgrade steps).
-
-Afterward: open a new Terminal and run `git --version` to confirm it worked.
-
-## This project’s files (repository) (optional — only if you want a copy)
-
-Skip this section if you only want the command. You do not need these files to
-install or update the command.
+Only for people who want a local copy of the project files. Not required to install
+or update the command-line program(s).
 
 - **Install (first time)** — download a full copy of the project, e.g.:
 
@@ -148,6 +145,5 @@ install or update the command.
   git pull
   ```
 
-Explain that this updates the source files on their computer. Updating the
-installed command is a separate step under **Update** above (re-run
-`go install`).
+Explain that this updates the source files; updating the installed commands is a
+separate step under **Update** above (re-run `go install`).

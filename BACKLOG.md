@@ -1,12 +1,12 @@
 # Backlog
 
 Outstanding work and unresolved questions for scan2pdf. Order does not imply
-priority. Current usage is in [README.md](README.md).
+priority. Current usage is in [docs/usage.md](docs/usage.md).
 
 ## PDF and encoding
 
 - Optionally embed original JPEG streams instead of decoding and re-encoding
-  losslessly (called out under optional `--optimise` in the README).
+  losslessly (called out under optional `--optimise` in [docs/usage.md](docs/usage.md)).
 - Preserve 16-bit samples, transparency and colour profiles through the
   pipeline. The current writer composites onto white and stores 8-bit samples.
 
