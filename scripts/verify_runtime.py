@@ -132,7 +132,7 @@ def main():
         output = work / f"{v_align}-{binding}-{h_align}.pdf"
         run([*options, "--v-align", v_align, "--h-align", h_align, "--binding", binding, output])
         check_pdf(output, v_align, binding, h_align)
-    run([*options, "--align", "top", work / "legacy-align.pdf"], error="--align is no longer supported; use --v-align")
+    run([*options, "--align", "top", work / "removed-align.pdf"], error="--align is no longer supported; use --v-align")
     checks.append("PNG/JPEG/TIFF/BMP, numeric ordering, trimming, A4, v/h alignments, both bindings")
     output = work / "top-left-centre.pdf"
     before = digest(output)

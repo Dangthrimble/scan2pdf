@@ -34,7 +34,7 @@ func (img EncodedImage) Dictionary() string {
 }
 
 // Compare complete image objects, including predictor metadata. Keeping the
-// legacy candidate ensures that optimisation never enlarges an image object.
+// default candidate ensures that optimisation never enlarges an image object.
 func optimiseImage(raw []byte, channels int, best EncodedImage) (EncodedImage, error) {
 	consider := func(data []byte, bits int, predictor bool) error {
 		compressed, err := deflate(data)

@@ -74,7 +74,7 @@ func decodeEncoded(t *testing.T, enc EncodedImage) image.Image {
 	return img
 }
 
-func TestLosslessEncoding(t *testing.T) {
+func TestOptimisedEncoding(t *testing.T) {
 	rng := rand.New(rand.NewSource(42))
 	for _, kind := range []string{"binary", "gray", "rgb", "alpha", "noise", "gray16"} {
 		for _, w := range []int{1, 7, 8, 9, 257} {
@@ -106,16 +106,16 @@ func TestLosslessEncoding(t *testing.T) {
 						}
 					}
 				}
-				enc, err := EncodeMode(img, "lossless")
+				enc, err := EncodeMode(img, "optimised")
 				if err != nil {
 					t.Fatal(err)
 				}
-				old, err := EncodeMode(img, "legacy")
+				old, err := EncodeMode(img, "default")
 				if err != nil {
 					t.Fatal(err)
 				}
 				if len(enc.Dictionary())+len(enc.Data) > len(old.Dictionary())+len(old.Data) {
-					t.Fatal("larger than legacy")
+					t.Fatal("larger than default")
 				}
 				decoded := decodeEncoded(t, enc)
 				for y := 0; y < bounds.Dy(); y++ {
@@ -140,7 +140,7 @@ func TestPackedBinaryAndPredictor(t *testing.T) {
 			img.Pix[i] = 255
 		}
 	}
-	enc, err := EncodeMode(img, "lossless")
+	enc, err := EncodeMode(img, "optimised")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -150,7 +150,7 @@ func TestPackedBinaryAndPredictor(t *testing.T) {
 	decodeEncoded(t, enc)
 	// A non-binary grey must never be thresholded into black or white.
 	img.Pix[0] = 254
-	enc, err = EncodeMode(img, "lossless")
+	enc, err = EncodeMode(img, "optimised")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -163,7 +163,7 @@ func TestPackedBinaryAndPredictor(t *testing.T) {
 			gradient.Pix[y*1001+x] = byte(x + y)
 		}
 	}
-	enc, err = EncodeMode(gradient, "lossless")
+	enc, err = EncodeMode(gradient, "optimised")
 	if err != nil {
 		t.Fatal(err)
 	}

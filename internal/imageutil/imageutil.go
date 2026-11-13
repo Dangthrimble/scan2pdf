@@ -195,11 +195,7 @@ func isWhite(c color.Color, threshold uint8) bool {
 	return composite(n.R) >= threshold && composite(n.G) >= threshold && composite(n.B) >= threshold
 }
 
-func Encode(img image.Image) (EncodedImage, error) {
-	return EncodeMode(img, "legacy")
-}
-
-// EncodeMode encodes with "legacy" (fast Flate) or "lossless" (optional size optimisation).
+// EncodeMode encodes with "default" (fast Flate) or "optimised" (optional size optimisation).
 func EncodeMode(img image.Image, mode string) (EncodedImage, error) {
 	b := img.Bounds()
 	w, h := b.Dx(), b.Dy()
@@ -241,7 +237,7 @@ func EncodeMode(img image.Image, mode string) (EncodedImage, error) {
 		return EncodedImage{}, err
 	}
 	enc.Data = data
-	if mode == "legacy" {
+	if mode == "default" {
 		return enc, nil
 	}
 	return optimiseImage(raw.Bytes(), channels, enc)

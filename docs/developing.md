@@ -44,7 +44,7 @@ python scripts/compare_compression.py --binary dist/scan2pdf \
   --input-dir /path/to/scans --prefix "Sample" --output dist/sample-comparison
 ```
 
-The comparison outputs include `legacy.pdf`, `lossless.pdf`, and
+The comparison outputs include `default.pdf`, `optimised.pdf`, and
 `comparison.json`. This developer verification needs Python and pypdf; the
 scan2pdf executable remains standalone. CI also runs the comparison suite on
 supported targets.
