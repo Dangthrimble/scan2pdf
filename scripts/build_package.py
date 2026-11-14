@@ -1,6 +1,5 @@
 """Build one release-format package, including licences and a checksum."""
 import argparse
-import datetime
 import hashlib
 import os
 from pathlib import Path
@@ -38,13 +37,12 @@ def main():
     if archive.exists():
         raise FileExistsError(archive)
     binary = "scan2pdf.exe" if goos == "windows" else "scan2pdf"
-    date = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     with tempfile.TemporaryDirectory(prefix="scan2pdf-package-") as temp:
         folder = Path(temp)
         env = os.environ | {"GOOS": goos, "GOARCH": arch, "CGO_ENABLED": "0", "GOFLAGS": "-mod=readonly"}
         subprocess.run([
             "go", "build", "-trimpath", "-ldflags",
-            f"-s -w -X main.version={args.version} -X main.commit={args.commit} -X main.date={date}",
+            f"-s -w -X github.com/Dangthrimble/scan2pdf/internal/version.Version={args.version}",
             "-o", str(folder / binary), "./cmd/scan2pdf",
         ], cwd=ROOT, env=env, check=True)
         (folder / binary).chmod(0o755)

@@ -11,12 +11,7 @@ import (
 	"github.com/Dangthrimble/scan2pdf/internal/geometry"
 	"github.com/Dangthrimble/scan2pdf/internal/pages"
 	"github.com/Dangthrimble/scan2pdf/internal/pdf"
-)
-
-var (
-	version = "dev"
-	commit  = "none"
-	date    = "unknown"
+	"github.com/Dangthrimble/scan2pdf/internal/version"
 )
 
 func main() {
@@ -83,7 +78,7 @@ func run(args []string) error {
 	}
 
 	if *showVersion {
-		fmt.Printf("scan2pdf %s (commit %s, built %s)\n", version, commit, date)
+		fmt.Println(version.String())
 		return nil
 	}
 
