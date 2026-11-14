@@ -117,7 +117,7 @@ def main():
         return result.stdout.strip()
 
     version = run(["--version"])
-    assert version.startswith(f"scan2pdf {args.version} (commit {args.commit}, built ")
+    assert version == args.version
     checks.append("archive checksum, licences, native architecture and version")
     inputs = work / "inputs"
     inputs.mkdir()
