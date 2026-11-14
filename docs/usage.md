@@ -197,7 +197,7 @@ Replace an existing PDF:
 scan2pdf --force "Sample.pdf"
 ```
 
-Show build information:
+`--version` prints one version line and exits successfully:
 
 ```sh
 scan2pdf --version
