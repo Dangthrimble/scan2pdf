@@ -17,7 +17,7 @@ Run this on the changes about to be committed. Fix mismatches in that change set
 Check every identity the change adds or changes: directories, files, packages, types, functions, methods, variables, constants, and configuration keys.
 
 - The name states the current role. A reader can tell what it is from the name and where it lives.
-- If behavior changed and the name did not, rename the identity and its references in this change.
+- If behaviour changed and the name did not, rename the identity and its references in this change.
 - Do not keep a name that describes a former role, a broader role than the code has, or a narrower role than the code has.
 - Match the naming style already used next to the change.
 
@@ -31,7 +31,7 @@ Check every identity the change adds or changes: directories, files, packages, t
 
 This applies to code, scripts, hooks, docs, and dependency declarations that ship as part of the program under development.
 
-- Do not add or leave behavior that fetches, dials, downloads, phones home, or calls a remote API unless the user has confirmed that access in this conversation.
+- Do not add or leave behaviour that fetches, dials, downloads, phones home, or calls a remote API unless the user has confirmed that access in this conversation.
 - If a plan or task already requires confirmation before a network step, get that confirmation before writing the step in.
 
 Cloning, fetching, pushing, and installing tools to work on the repository are ordinary maintainer actions. They are not a violation of this rule. A plan may still require confirmation before those actions; follow that plan.
