@@ -11,6 +11,8 @@ description: >-
 
 ## Contract
 
+Use UK English spelling throughout the README and guides; see `AGENTS.md`.
+
 README is a **short hub**. Procedures live in linked guides. Look and feel stay
 consistent across sibling Go CLI repos; content stays appropriate to each repo.
 
@@ -22,7 +24,7 @@ Required hub shape:
 3. `## Install` — path links only (no full procedures)
 4. `## Try it` — one short example; link to usage for the rest
 5. `## Docs` — link map to guides and root backlog/history when they exist
-6. `## Licence` or `## License` — keep that repo’s existing spelling
+6. `## Licence` — use UK spelling; do not use `## License`
 
 ## Required docs/
 
