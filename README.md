@@ -39,6 +39,7 @@ Full options, page geometry, and formats are in
 - [INSTALL.md](INSTALL.md) — install from a release package (no Go required)
 - [Developing](docs/developing.md) — local builds, tests, CI and compression comparison
 - [Backlog](BACKLOG.md) — outstanding work
+- [Development history](DEVELOPMENT_HISTORY.md) — completed work and decisions
 
 ## Licence
 
