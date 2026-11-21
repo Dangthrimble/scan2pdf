@@ -14,6 +14,7 @@
 | 2026-11-14 | `--version` reports the release tag only; v0.2.2 was tagged but its release run failed. |
 | 2026-11-20 | Adopted the shared cross-agent guidance, UK English rule, and release and packaging conventions. |
 | 2026-11-20 | Standardised CI with race tests, gofmt, vet, staticcheck, govulncheck, and a required `CI gate`; raised the minimum Go version to 1.26.11. |
+| 2026-11-21 | Replaced the Python packager with the shared Go `cmd/buildpackage`, standardised versioned ZIP assets and checksums, and moved release publishing to a tag-validated workflow that reuses CI. |
 
 ## Design notes
 

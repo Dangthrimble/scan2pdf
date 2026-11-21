@@ -22,6 +22,24 @@ alignment, mirrored margins, overwrite behaviour, and related edge cases. Verifi
 build/test hosts; the installed `scan2pdf` command itself remains a standalone
 Go binary.
 
+## Packaging
+
+`cmd/buildpackage` builds the release archive from a tested `scan2pdf`
+executable. It verifies that the executable was built with `CGO_ENABLED=0`,
+checks its `--version` output, adds the documentation, dependency notices and an
+internal checksum list, and writes the archive plus a `.zip.sha256` file.
+
+```sh
+go run ./cmd/buildpackage -binary dist/scan2pdf -version v0.2.3 -out dist/packages
+```
+
+`release.json` supplies the product name, module path, command name and extra
+files. Archives are named `scan2pdf-v<version>-<platform>.zip` for all six
+targets. The [release workflow](../.github/workflows/release.yml) accepts only
+`vMAJOR.MINOR.PATCH` tags, calls the CI workflow with the tag as the package
+version, and publishes the six archives and a combined `SHA256SUMS.txt` only
+after every package has verified.
+
 ## Optional lossless PDF size optimisation (developer comparison)
 
 For a reproducible comparison with independent decoding and JSON size/timing

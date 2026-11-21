@@ -1,0 +1,6 @@
+{
+  "product": "scan2pdf",
+  "module": "github.com/Dangthrimble/scan2pdf",
+  "commands": ["scan2pdf"],
+  "include": []
+}

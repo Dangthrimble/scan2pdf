@@ -6,41 +6,65 @@ on:
       - 'v*'
 
 permissions:
-  contents: write
+  contents: read
 
-env:
-  GOFLAGS: -mod=readonly
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
+  check-tag:
+    name: Check tag
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate release tag
+        run: |
+          if ! [[ "${GITHUB_REF_NAME}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Release tags must match vMAJOR.MINOR.PATCH" >&2
+            exit 1
+          fi
+
   validate:
+    name: Validate release
+    needs: check-tag
     uses: ./.github/workflows/ci.yml
     with:
       package-version: ${{ github.ref_name }}
 
-  release:
+  publish:
+    name: Publish release
     needs: validate
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      VERSION: ${{ github.ref_name }}
+      PRODUCT: scan2pdf
     steps:
-      - uses: actions/download-artifact@v8
+      - name: Download packages
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
         with:
           path: dist
-          pattern: runtime-package-*
+          pattern: release-package-*
           merge-multiple: true
 
-      - name: Create checksums
+      - name: Verify all six packages
         run: |
-          cd dist
-          cat *.sha256 > SHA256SUMS.txt
-          sha256sum -c SHA256SUMS.txt
+          set -euo pipefail
+          platforms=(macos-intel macos-apple-silicon windows-x64 windows-arm64 linux-x64 linux-arm64)
+          for platform in "${platforms[@]}"; do
+            archive="${PRODUCT}-${VERSION}-${platform}.zip"
+            test -f "dist/${archive}"
+            (cd dist && sha256sum -c "${archive}.sha256")
+          done
+          cat dist/*.zip.sha256 > dist/SHA256SUMS.txt
+          (cd dist && sha256sum -c SHA256SUMS.txt)
 
       - name: Create GitHub release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create "${GITHUB_REF_NAME}" \
-            dist/*.zip \
-            dist/*.tar.gz \
-            dist/SHA256SUMS.txt \
-            --repo "${GITHUB_REPOSITORY}" \
+          gh release create "$VERSION" dist/*.zip dist/*.zip.sha256 dist/SHA256SUMS.txt \
+            --repo "$GITHUB_REPOSITORY" \
             --generate-notes \
-            --title "${GITHUB_REF_NAME}"
+            --title "$VERSION"
