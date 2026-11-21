@@ -13,7 +13,7 @@
 | 2026-11-13 | Added the install and packaging updates, the `maintain-before-commit` skill, and the nested-docs runtime unpack fix. |
 | 2026-11-14 | `--version` reports the release tag only; v0.2.2 was tagged but its release run failed. |
 | 2026-11-20 | Adopted the shared cross-agent guidance, UK English rule, and release and packaging conventions. |
-| 2026-11-20 | Standardised CI with race tests, gofmt, vet, staticcheck, govulncheck, and a required `CI gate`; raised the minimum Go version to 1.26.6. |
+| 2026-11-20 | Standardised CI with race tests, gofmt, vet, staticcheck, govulncheck, and a required `CI gate`; raised the minimum Go version to 1.26.11. |
 
 ## Design notes
 
