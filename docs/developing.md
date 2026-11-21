@@ -13,10 +13,12 @@ go test ./...
 
 ## Hosted runtime verification
 
-CI runs tests and native runtime checks on supported operating-system and
-architecture combinations. Those checks cover image conversion, page ordering,
-trimming, geometry, alignment, mirrored margins, overwrite behaviour, and
-related edge cases. Verification helpers use Python and pypdf only on the
+CI runs tests and native runtime checks on all six release targets. The race
+detector runs on every target except Windows ARM64, where Go does not support it.
+A lint job checks `gofmt`, `go vet`, staticcheck and govulncheck, and a final
+`CI gate` job aggregates the required checks. The
+native runtime checks cover image conversion, page ordering, trimming, geometry,
+alignment, mirrored margins, overwrite behaviour, and related edge cases. Verification helpers use Python and pypdf only on the
 build/test hosts; the installed `scan2pdf` command itself remains a standalone
 Go binary.
 
