@@ -142,7 +142,7 @@ def main():
         return result.stdout.strip()
 
     version = run(["--version"])
-    assert version == args.version
+    assert version == f"scan2pdf {args.version}"
     checks.append("archive checksum, licences, native architecture and version")
     inputs = work / "inputs"
     inputs.mkdir()

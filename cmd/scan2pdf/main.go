@@ -14,11 +14,28 @@ import (
 	"github.com/Dangthrimble/scan2pdf/internal/version"
 )
 
+type usageError struct {
+	err error
+}
+
+func (e usageError) Error() string { return e.err.Error() }
+
+func usagef(format string, args ...any) error {
+	return usageError{fmt.Errorf(format, args...)}
+}
+
 func main() {
-	if err := run(os.Args[1:]); err != nil {
-		fmt.Fprintf(os.Stderr, "scan2pdf: %v\n", err)
-		os.Exit(1)
+	err := run(os.Args[1:])
+	if err == nil {
+		return
 	}
+	var usage usageError
+	if errors.As(err, &usage) {
+		fmt.Fprintf(os.Stderr, "scan2pdf: %v\n", err)
+		os.Exit(2)
+	}
+	fmt.Fprintf(os.Stderr, "scan2pdf: %v\n", err)
+	os.Exit(1)
 }
 
 func removedAlignFlag(args []string) error {
@@ -27,7 +44,7 @@ func removedAlignFlag(args []string) error {
 			break
 		}
 		if a == "--align" || strings.HasPrefix(a, "--align=") {
-			return errors.New("--align is no longer supported; use --v-align")
+			return usagef("--align is no longer supported; use --v-align")
 		}
 	}
 	return nil
@@ -74,31 +91,34 @@ func run(args []string) error {
 	}
 
 	if err := fs.Parse(args); err != nil {
-		return err
+		if errors.Is(err, flag.ErrHelp) {
+			return nil
+		}
+		return usageError{err}
 	}
 
 	if *showVersion {
-		fmt.Println(version.String())
+		fmt.Printf("scan2pdf %s\n", version.String())
 		return nil
 	}
 
 	if fs.NArg() != 1 {
 		fs.Usage()
-		return errors.New("exactly one output PDF is required")
+		return usagef("exactly one output PDF is required")
 	}
 
 	output := fs.Arg(0)
 	if !strings.EqualFold(filepath.Ext(output), ".pdf") {
-		return fmt.Errorf("output must have a .pdf extension: %s", output)
+		return usagef("output must have a .pdf extension: %s", output)
 	}
 
 	if *trimThreshold < 0 || *trimThreshold > 255 {
-		return fmt.Errorf("--trim-threshold must be between 0 and 255")
+		return usagef("--trim-threshold must be between 0 and 255")
 	}
 
 	ps, err := geometry.ParsePageSize(*pageSpec)
 	if err != nil {
-		return err
+		return usageError{err}
 	}
 
 	if *prefix == "" {
@@ -114,19 +134,19 @@ func run(args []string) error {
 
 	mc, err := geometry.ParseMargins(*margin, *marginTop, *marginBottom, *marginLeft, *marginRight, *marginInner, *marginOuter, *mirror, *binding)
 	if err != nil {
-		return err
+		return usageError{err}
 	}
 
 	vAlign := strings.ToLower(*vAlignFlag)
 	if vAlign != "top" && vAlign != "middle" && vAlign != "bottom" {
-		return fmt.Errorf("--v-align must be top, middle, or bottom")
+		return usagef("--v-align must be top, middle, or bottom")
 	}
 	hAlign := strings.ToLower(*hAlignFlag)
 	if hAlign == "center" {
 		hAlign = "centre"
 	}
 	if hAlign != "left" && hAlign != "centre" && hAlign != "right" {
-		return fmt.Errorf("--h-align must be left, centre, or right")
+		return usagef("--h-align must be left, centre, or right")
 	}
 
 	pageList, err := pages.Discover(*inputDir, *prefix)
