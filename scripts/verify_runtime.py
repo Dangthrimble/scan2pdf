@@ -8,12 +8,20 @@ import platform
 import shutil
 import struct
 import subprocess
-import tarfile
 import zipfile
 
 from pypdf import PdfReader
-from build_package import ROOT, TARGETS
 from compare_compression import verify_suite
+
+ROOT = Path(__file__).resolve().parents[1]
+TARGETS = {
+    "macos-intel": ("darwin", "amd64"),
+    "macos-apple-silicon": ("darwin", "arm64"),
+    "windows-x64": ("windows", "amd64"),
+    "windows-arm64": ("windows", "arm64"),
+    "linux-x64": ("linux", "amd64"),
+    "linux-arm64": ("linux", "arm64"),
+}
 
 
 def digest(path):
@@ -59,7 +67,7 @@ def main():
     p.add_argument("--commit", required=True)
     p.add_argument("--output", type=Path, required=True)
     args = p.parse_args()
-    goos, arch, _ = TARGETS[args.target]
+    goos, arch = TARGETS[args.target]
     host_os = {"Darwin": "darwin", "Windows": "windows", "Linux": "linux"}[platform.system()]
     host_arch = {"x86_64": "amd64", "amd64": "amd64", "arm64": "arm64", "aarch64": "arm64"}[platform.machine().lower()]
     assert (host_os, host_arch) == (goos, arch), "verification must run natively"
@@ -67,41 +75,58 @@ def main():
     expected_checksum = archive.with_name(archive.name + ".sha256").read_text().split()[0]
     assert digest(archive) == expected_checksum, "archive checksum mismatch"
     binary_name = "scan2pdf.exe" if goos == "windows" else "scan2pdf"
-    expected = {
-        binary_name,
-        "README.md",
-        "INSTALL.md",
-        "LICENSE",
-        "THIRD_PARTY_NOTICES.txt",
-        "docs/install-go.md",
-        "docs/usage.md",
-        "docs/developing.md",
-    }
-    if archive.name.endswith(".zip"):
-        with zipfile.ZipFile(archive) as z:
-            assert len(z.namelist()) == len(expected) and set(z.namelist()) == expected
-            assert z.testzip() is None
-            data = {name: z.read(name) for name in expected}
-            if goos != "windows":
-                assert z.getinfo(binary_name).external_attr >> 16 & 0o111
-    else:
-        with tarfile.open(archive, "r:gz") as t:
-            assert len(t.getmembers()) == len(expected) and {m.name for m in t.getmembers()} == expected
-            assert all(m.isfile() for m in t.getmembers())
-            assert t.getmember(binary_name).mode & 0o111
-            data = {name: t.extractfile(name).read() for name in expected}
-    for name in expected - {binary_name}:
-        assert data[name] == (ROOT / name).read_bytes(), f"package {name} differs from source"
-    assert b"MIT License" in data["LICENSE"]
-    assert b"Copyright (c) 2026 Dangthrimble" in data["LICENSE"]
+    prefix = archive.stem + "/"
     work = args.output.resolve()
     work.mkdir(parents=True, exist_ok=False)
     package = work / "unpacked"
     package.mkdir()
-    for name, content in data.items():
-        dest = package / name
-        dest.parent.mkdir(parents=True, exist_ok=True)
-        dest.write_bytes(content)
+
+    with zipfile.ZipFile(archive) as z:
+        assert z.testzip() is None
+        names = z.namelist()
+        assert names and all(name.startswith(prefix) for name in names), "package has an unexpected root"
+        members = {name[len(prefix):] for name in names}
+        required = {
+            binary_name,
+            "README.md",
+            "INSTALL.md",
+            "LICENSE",
+            "BACKLOG.md",
+            "DEVELOPMENT_HISTORY.md",
+            "THIRD_PARTY_NOTICES.txt",
+            "VERSION.txt",
+            "SHA256SUMS.txt",
+            "docs/install-go.md",
+            "docs/usage.md",
+            "docs/developing.md",
+        }
+        assert required <= members, f"missing package members: {sorted(required - members)}"
+        if goos != "windows":
+            assert z.getinfo(prefix + binary_name).external_attr >> 16 & 0o111
+        for name in names:
+            dest = package / name[len(prefix):]
+            dest.parent.mkdir(parents=True, exist_ok=True)
+            dest.write_bytes(z.read(name))
+
+        manifest = z.read(prefix + "SHA256SUMS.txt").decode()
+        checksums = {}
+        for line in manifest.splitlines():
+            checksum, name = line.split("  ", 1)
+            checksums[name] = checksum
+        for name in members - {"SHA256SUMS.txt"}:
+            assert checksums.get(name) == hashlib.sha256(z.read(prefix + name)).hexdigest(), f"checksum mismatch for {name}"
+
+        assert b"MIT License" in z.read(prefix + "LICENSE")
+        assert b"Copyright (c) 2026 Dangthrimble" in z.read(prefix + "LICENSE")
+        version_text = z.read(prefix + "VERSION.txt").decode()
+        assert f"scan2pdf {args.version}" in version_text
+        assert f"Platform: {args.target}" in version_text
+        assert any(name.startswith(prefix + "THIRD_PARTY_LICENSES/golang.org/x/image@") for name in names)
+        for name in ("README.md", "INSTALL.md", "LICENSE", "BACKLOG.md", "DEVELOPMENT_HISTORY.md"):
+            assert z.read(prefix + name) == (ROOT / name).read_bytes(), f"package {name} differs from source"
+        for source in (ROOT / "docs").glob("*.md"):
+            assert z.read(prefix + "docs/" + source.name) == source.read_bytes(), f"package docs/{source.name} differs from source"
+
     binary = package / binary_name
     binary.chmod(0o755)
     info = subprocess.check_output(["go", "version", "-m", str(binary)], text=True)
