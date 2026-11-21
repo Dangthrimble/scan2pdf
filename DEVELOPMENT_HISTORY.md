@@ -15,6 +15,7 @@
 | 2026-11-20 | Adopted the shared cross-agent guidance, UK English rule, and release and packaging conventions. |
 | 2026-11-20 | Standardised CI with race tests, gofmt, vet, staticcheck, govulncheck, and a required `CI gate`; raised the minimum Go version to 1.26.11. |
 | 2026-11-21 | Replaced the Python packager with the shared Go `cmd/buildpackage`, standardised versioned ZIP assets and checksums, and moved release publishing to a tag-validated workflow that reuses CI. |
+| 2026-11-21 | `--version` now prints `scan2pdf <version>`; usage and flag errors exit `2`, `--help` exits `0`, and runtime failures remain exit `1`. |
 
 ## Design notes
 

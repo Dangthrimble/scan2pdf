@@ -197,7 +197,7 @@ Replace an existing PDF:
 scan2pdf --force "Sample.pdf"
 ```
 
-`--version` prints one version line and exits successfully:
+`--version` prints `scan2pdf <version>` and exits successfully:
 
 ```sh
 scan2pdf --version
@@ -208,6 +208,9 @@ Show all options:
 ```sh
 scan2pdf -h
 ```
+
+Exit status is `0` on success, `2` for a usage or option error, and `1` for a
+conversion or file error.
 
 ## Optional lossless PDF size optimisation
 
