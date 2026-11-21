@@ -24,14 +24,14 @@ git --version
 
 Go is the programming toolkit used to download and install this command-line program.
 
-- **Install:** get Go **1.26** or newer from [go.dev/dl](https://go.dev/dl/). Choose the installer for your computer, run it, and accept the defaults unless you know you need otherwise.
+- **Install:** get Go **1.26.11** or newer from [go.dev/dl](https://go.dev/dl/). Choose the installer for your computer, run it, and accept the defaults unless you know you need otherwise.
 - **Check:** open a **new** Terminal window and run:
 
   ```bash
   go version
   ```
 
-  You should see a version of 1.26 or higher.
+  You should see a version of 1.26.11 or higher.
 
 - **Update:** later, download a newer installer from the same page and run it again (or follow that page’s update steps), then open a new Terminal and run `go version` to confirm.
 
