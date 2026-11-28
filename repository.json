@@ -1,0 +1,6 @@
+{
+  "description": "Turn numbered scan images into a print-ready PDF.",
+  "topics": ["go", "pdf", "scanning", "cli"],
+  "issues": true,
+  "discussions": false
+}

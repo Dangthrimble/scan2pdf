@@ -17,6 +17,7 @@
 | 2026-11-21 | Replaced the Python packager with the shared Go `cmd/buildpackage`, standardised versioned ZIP assets and checksums, and moved release publishing to a tag-validated workflow that reuses CI. |
 | 2026-11-21 | `--version` now prints `scan2pdf <version>`; usage and flag errors exit `2`, `--help` exits `0`, and runtime failures remain exit `1`. |
 | 2026-11-21 | Added the shared repository-settings script, Dependabot, issue and pull-request templates, and the security policy. |
+| 2026-11-28 | Backported the template's generic `repository.json`-driven settings script with private-repository handling and automatic ruleset creation. |
 
 ## Design notes
 
